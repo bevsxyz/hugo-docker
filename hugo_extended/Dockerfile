@@ -26,7 +26,7 @@ RUN muslstack -s 0x800000 /usr/bin/hugo
 
 # Second stage - build the final image with minimal apk dependencies.
 # alpine:edge is required for muslstack to work as of June 2019.
-FROM alpine:edge
+FROM golang:1.15-alpine
 ARG HUGO=hugo
 COPY --from=0 /usr/bin/hugo /usr/bin/
 COPY --from=0 /usr/local/go/* /usr/local/go/
