@@ -26,16 +26,17 @@ RUN muslstack -s 0x800000 /usr/bin/hugo
 
 # Second stage - build the final image with minimal apk dependencies.
 # alpine:edge is required for muslstack to work as of June 2019.
-FROM scratch
+FROM alpine:edge
 ARG HUGO=hugo
 COPY --from=0 /usr/bin/hugo /usr/local/go/bin/go /usr/bin/
-#RUN set -eux && \
-#    case ${HUGO} in \
-#      *_extended) \
-#        apk add --update --no-cache libc6-compat libstdc++ && \
-#        rm -rf /var/cache/apk/* ;; \
-#    esac && \
-#    hugo version
+RUN set -eux && \
+    case ${HUGO} in \
+      *_extended) \
+        apk add --update --no-cache libc6-compat libstdc++ && \
+        rm -rf /var/cache/apk/* ;; \
+    esac && \
+    hugo version
 EXPOSE 1313
 WORKDIR /src
 CMD ["/usr/bin/hugo"]
+
