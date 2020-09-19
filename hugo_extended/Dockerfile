@@ -7,7 +7,7 @@
 # Use golang image to run https://github.com/yaegashi/muslstack
 # on hugo executable to extend its default thread stack size to 8MB
 # to work around segmentation fault issues.
-FROM golang:1.13-alpine
+FROM golang:1.15-alpine
 ARG HUGO=hugo
 ARG HUGO_VERSION=0.75.1
 ARG HUGO_SHA=98e157dc2eda1f78b19959ff45c8a750abd6ae12330fad6574b466efdb58bd1d
