@@ -29,7 +29,6 @@ RUN muslstack -s 0x800000 /usr/bin/hugo
 FROM golang:1.15-alpine
 ARG HUGO=hugo
 COPY --from=0 /usr/bin/hugo /usr/bin/
-COPY --from=0 /usr/local/go/* /usr/local/go/
 RUN set -eux && \
     case ${HUGO} in \
       *_extended) \
