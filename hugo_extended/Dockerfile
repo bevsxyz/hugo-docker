@@ -21,21 +21,6 @@ RUN set -eux && \
     wget -O ${HUGO_VERSION}.tar.gz https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO}_${HUGO_VERSION}_Linux-64bit.tar.gz && \
     echo "${HUGO_SHA}  ${HUGO_VERSION}.tar.gz" | sha256sum -c && \
     tar xf ${HUGO_VERSION}.tar.gz && mv hugo* /usr/bin/hugo
-RUN go get github.com/yaegashi/muslstack
-RUN muslstack -s 0x800000 /usr/bin/hugo
-
-# Second stage - build the final image with minimal apk dependencies.
-# alpine:edge is required for muslstack to work as of June 2019.
-FROM golang:1.15-alpine
-ARG HUGO=hugo
-COPY --from=0 /usr/bin/hugo /usr/bin/
-RUN set -eux && \
-    case ${HUGO} in \
-      *_extended) \
-        apk add --update --no-cache libc6-compat libstdc++ && \
-        rm -rf /var/cache/apk/* ;; \
-    esac && \
-    hugo version
 EXPOSE 1313
 WORKDIR /src
 CMD ["/usr/bin/hugo"]
