@@ -28,7 +28,7 @@ RUN muslstack -s 0x800000 /usr/bin/hugo
 # alpine:edge is required for muslstack to work as of June 2019.
 FROM scratch
 ARG HUGO=hugo
-COPY --from=0 /usr/bin/hugo /usr/local/go/bin/go /usr/bin
+COPY --from=0 /usr/bin/hugo /usr/local/go/bin/go /usr/bin/
 #RUN set -eux && \
 #    case ${HUGO} in \
 #      *_extended) \
