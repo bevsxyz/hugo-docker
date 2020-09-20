@@ -8,22 +8,10 @@
 # on hugo executable to extend its default thread stack size to 8MB
 # to work around segmentation fault issues.
 FROM golang:1.15-alpine
-ENV GO111MODULE=on
 ARG HUGO=hugo
 ARG HUGO_VERSION=0.75.1
-ARG HUGO_SHA=98e157dc2eda1f78b19959ff45c8a750abd6ae12330fad6574b466efdb58bd1d
-ARG HUGO_EXTENDED_SHA=261fbc6b2bb835192761b9d9bf726c6dea89f8c71b15b6af63e3a8a574c8d4c5
-RUN set -eux && \
-    case ${HUGO} in \
-      *_extended) \
-        HUGO_SHA="${HUGO_EXTENDED_SHA}" ;; \
-    esac && \
-    apk add --update --no-cache ca-certificates openssl git && \
-    wget -O ${HUGO_VERSION}.tar.gz https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO}_${HUGO_VERSION}_Linux-64bit.tar.gz && \
-    echo "${HUGO_SHA}  ${HUGO_VERSION}.tar.gz" | sha256sum -c && \
-    tar xf ${HUGO_VERSION}.tar.gz && mv hugo* /usr/bin/hugo
-RUN go get github.com/yaegashi/muslstack
-RUN muslstack -s 0x800000 /usr/bin/hugo
+RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    apk add --update --no-cache git hugo@edge=~${HUGO_VERSION} && \
 EXPOSE 1313
 WORKDIR /src
 CMD ["/usr/bin/hugo"]
