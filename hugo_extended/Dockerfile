@@ -24,18 +24,6 @@ RUN set -eux && \
     tar xf ${HUGO_VERSION}.tar.gz && mv hugo* /usr/bin/hugo
 RUN go get github.com/yaegashi/muslstack
 RUN muslstack -s 0x800000 /usr/bin/hugo
-
-FROM scratch
-ARG HUGO=hugo
-ENV GO111MODULE=on
-COPY --from=0 /* /
-RUN set -eux && \
-    case ${HUGO} in \
-      *_extended) \
-    esac && \
-    hugo version
-
 EXPOSE 1313
 WORKDIR /src
 CMD ["/usr/bin/hugo"]
-
