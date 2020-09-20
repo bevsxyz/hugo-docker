@@ -8,6 +8,7 @@
 # on hugo executable to extend its default thread stack size to 8MB
 # to work around segmentation fault issues.
 FROM golang:1.15-alpine
+ENV GO111MODULE=on
 ARG HUGO=hugo
 ARG HUGO_VERSION=0.75.1
 ARG HUGO_SHA=98e157dc2eda1f78b19959ff45c8a750abd6ae12330fad6574b466efdb58bd1d
@@ -21,6 +22,19 @@ RUN set -eux && \
     wget -O ${HUGO_VERSION}.tar.gz https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO}_${HUGO_VERSION}_Linux-64bit.tar.gz && \
     echo "${HUGO_SHA}  ${HUGO_VERSION}.tar.gz" | sha256sum -c && \
     tar xf ${HUGO_VERSION}.tar.gz && mv hugo* /usr/bin/hugo
+RUN go get github.com/yaegashi/muslstack
+RUN muslstack -s 0x800000 /usr/bin/hugo
+
+FROM scratch
+ARG HUGO=hugo
+ENV GO111MODULE=on
+COPY --from=0 /* /
+RUN set -eux && \
+    case ${HUGO} in \
+      *_extended) \
+    esac && \
+    hugo version
+
 EXPOSE 1313
 WORKDIR /src
 CMD ["/usr/bin/hugo"]
